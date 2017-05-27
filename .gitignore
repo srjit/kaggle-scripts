@@ -99,3 +99,4 @@ ENV/
 
 # mypy
 .mypy_cache/
+/zillow/zillow_data_dictonary.xlsx
