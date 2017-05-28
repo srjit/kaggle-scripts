@@ -49,4 +49,4 @@ def pass_values(i):
     plot(feature_values, responses, columns[i])
 
     
-map(pass_values, feature_indices)    
+list(map(pass_values, feature_indices))
