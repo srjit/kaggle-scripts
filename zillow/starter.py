@@ -26,9 +26,6 @@ variable = df_train.ix[:,1]
     
 def replacenan(x):
     return 0 if np.isnan(x) else x
-    
-
-# x_train['airconditioningtypeid'] = x_train['airconditioningtypeid'].apply(lambda x: replacenan(x))
 
 feature_indices = list(range(0,58))
 
@@ -50,3 +47,5 @@ def pass_values(i):
 
     
 list(map(pass_values, feature_indices))
+
+
