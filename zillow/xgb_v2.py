@@ -18,14 +18,19 @@ df_train = df_properties.merge(df_train, how='inner', on='parcelid')
 df_train["transactiondate"] = pd.to_datetime(df_train["transactiondate"])
 df_train["transactionmonth"] = df_train["transactiondate"].apply(lambda x: x.strftime('%B')) 
 
+cols = list(df_train.columns)
+features = cols[1:58] + cols[60:61] + cols[58:59]
+
 for c in df_train.dtypes[df_train.dtypes == object].index.values:
     df_train[c] = (df_train[c] == True)
 
+df_train = df_train[features]    
+
 df_train, df_valid = train_test_split(df_train, test_size=0.1, random_state=55)
-x_train = df_train.ix[:,1:58]
+x_train = df_train.ix[:,0:58]
 y_train = df_train.ix[:,58:59]
 
-x_valid = df_valid.ix[:,1:58]
+x_valid = df_valid.ix[:,0:58]
 y_valid = df_valid.ix[:,58:59]
 
 
@@ -57,13 +62,20 @@ print('Building test set ...')
 ## merge with properties so that we get the logerror on test data
 df_sample['parcelid'] = df_sample['ParcelId']
 df_test = df_properties.merge(df_sample, on='parcelid', how='inner')
+
+
+########## Create the month field  ##########
+df_test["transactiondate"] = pd.to_datetime(df_test["transactiondate"])
+df_test["transactionmonth"] = df_test["transactiondate"].apply(lambda x: x.strftime('%B')) 
+
+
 df_test.columns = df_test.columns.str.strip()
 
 train_columns = list(df_train.columns)
 
 train_columns.remove("logerror")
-train_columns.remove("transactiondate")
-train_columns.remove("parcelid")
+#train_columns.remove("transactiondate")
+#train_columns.remove("parcelid")
 
 
 
