@@ -1,11 +1,13 @@
 #! /usr/bin/python3
-
 import pandas as pd
 import numpy as np
 import xgboost as xgb
 
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
+
+
+from sklearn import preprocessing
 
 df_properties = pd.read_csv("properties_2016.csv")
 df_train = pd.read_csv("train_2016.csv")
@@ -16,7 +18,14 @@ df_train = df_properties.merge(df_train, how='inner', on='parcelid')
 
 ########## Create the month field  ##########
 df_train["transactiondate"] = pd.to_datetime(df_train["transactiondate"])
-df_train["transactionmonth"] = df_train["transactiondate"].apply(lambda x: x.strftime('%B')) 
+df_train["transactionmonth"] = df_train["transactiondate"].apply(lambda x : int(str(x)[5:7]))
+
+# df_train["transactionmonth"] = df_train["transactiondate"].apply(lambda x: x.strftime('%B'))
+# labelling with scikit labelling
+# le = preprocessing.LabelEncoder()
+# encoder_model = le.fit(list(set(list(df_train["transactionmonth"]))))
+# df_train["month"] = df_train["transactionmonth"].apply(lambda x : encoder_model.transform([x])[0])
+
 
 cols = list(df_train.columns)
 features = cols[1:58] + cols[60:61] + cols[58:59]
@@ -64,38 +73,56 @@ df_sample['parcelid'] = df_sample['ParcelId']
 df_test = df_properties.merge(df_sample, on='parcelid', how='inner')
 
 
-########## Create the month field  ##########
-df_test["transactiondate"] = pd.to_datetime(df_test["transactiondate"])
-df_test["transactionmonth"] = df_test["transactiondate"].apply(lambda x: x.strftime('%B')) 
-
-
-df_test.columns = df_test.columns.str.strip()
+# df_test.columns = df_test.columns.str.strip()
 
 train_columns = list(df_train.columns)
 
+train_columns.remove("transactionmonth")
 train_columns.remove("logerror")
-#train_columns.remove("transactiondate")
+
+
 #train_columns.remove("parcelid")
-
-
 
 ## treat the "objects" the same way we treated the train data
 x_test = df_test[train_columns]
 
+
 for c in x_test.dtypes[x_test.dtypes == object].index.values:
     x_test[c] = (x_test[c] == True)
 
-    
+## lets find predictions for the month of october    
+x_test["transactionmonth"] = 10    
 d_test = xgb.DMatrix(x_test)
-
 print('Predicting on test ...')
-p_test = clf.predict(d_test)
+p_test_oct = clf.predict(d_test)
+
+
+## predictions for the month of november
+x_test["transactionmonth"] = 11
+d_test = xgb.DMatrix(x_test)
+print('Predicting on test ...')
+p_test_nov = clf.predict(d_test)
+
+
+## predictions for the month of december
+x_test["transactionmonth"] = 12
+d_test = xgb.DMatrix(x_test)
+print('Predicting on test ...')
+p_test_dec = clf.predict(d_test)
+
 
 
 sub = pd.read_csv('sample_submission.csv')
-for c in sub.columns[sub.columns != 'ParcelId']:
-    sub[c] = p_test
+
+sub["201610"] = p_test_oct
+sub["201611"] = p_test_nov
+sub["201612"] = p_test_dec
+sub["201710"] = p_test_oct
+sub["201711"] = p_test_nov
+sub["201712"] = p_test_dec
+# for c in sub.columns[sub.columns != 'ParcelId']:
+#     sub[c] = p_test
 
 print('Writing csv ...')
-sub.to_csv('xgb_starter.csv', index=False, float_format='%.4f')
+sub.to_csv('xgb_v2.csv', index=False, float_format='%.4f')
 

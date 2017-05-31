@@ -30,10 +30,11 @@ print('Building DMatrix...')
 d_train = xgb.DMatrix(x_train, label=y_train)
 d_valid = xgb.DMatrix(x_valid, label=y_valid)
 
+
 print('Training ...')
 
 params = {}
-params['eta'] = 0.02
+params['eta'] = 0.01
 params['objective'] = 'reg:linear'
 params['eval_metric'] = 'mae'
 params['max_depth'] = 4
