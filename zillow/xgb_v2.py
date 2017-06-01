@@ -73,15 +73,9 @@ df_sample['parcelid'] = df_sample['ParcelId']
 df_test = df_properties.merge(df_sample, on='parcelid', how='inner')
 
 
-# df_test.columns = df_test.columns.str.strip()
-
 train_columns = list(df_train.columns)
-
 train_columns.remove("transactionmonth")
 train_columns.remove("logerror")
-
-
-#train_columns.remove("parcelid")
 
 ## treat the "objects" the same way we treated the train data
 x_test = df_test[train_columns]
@@ -92,23 +86,23 @@ for c in x_test.dtypes[x_test.dtypes == object].index.values:
 
 ## lets find predictions for the month of october    
 x_test["transactionmonth"] = 10    
-d_test = xgb.DMatrix(x_test)
+d_test_oct = xgb.DMatrix(x_test)
 print('Predicting on test ...')
-p_test_oct = clf.predict(d_test)
+p_test_oct = clf.predict(d_test_oct)
 
 
 ## predictions for the month of november
 x_test["transactionmonth"] = 11
-d_test = xgb.DMatrix(x_test)
+d_test_nov = xgb.DMatrix(x_test)
 print('Predicting on test ...')
-p_test_nov = clf.predict(d_test)
+p_test_nov = clf.predict(d_test_nov)
 
 
 ## predictions for the month of december
 x_test["transactionmonth"] = 12
-d_test = xgb.DMatrix(x_test)
+d_test_dec = xgb.DMatrix(x_test)
 print('Predicting on test ...')
-p_test_dec = clf.predict(d_test)
+p_test_dec = clf.predict(d_test_dec)
 
 
 
