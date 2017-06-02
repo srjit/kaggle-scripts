@@ -104,8 +104,6 @@ d_test_dec = xgb.DMatrix(x_test)
 print('Predicting on test ...')
 p_test_dec = clf.predict(d_test_dec)
 
-
-
 sub = pd.read_csv('sample_submission.csv')
 
 sub["201610"] = p_test_oct
