@@ -61,6 +61,14 @@ propertyzoningdesc_ = list(df_train["propertyzoningdesc"])
 df_train["propertyzoningdesc"] = pd.Series(le.transform(propertyzoningdesc_))
 
 
+##############################
+######## Correlation #########
+##############################
+
+correlations = df_train.corr()
+
+corr_file = "variable_correlations_v2.csv"
+correlations.to_csv(corr_file, sep=',')
 
 
 train_data = pd.read_csv("train_data.csv")
