@@ -73,8 +73,6 @@ df_train["propertyzoningdesc"] = pd.Series(le.transform(propertyzoningdesc_))
 ## what is the max count of df_train["propertyzoningdesc"] - LAR1 : Lets use it as missing value
 ## df_train[['propertyzoningdesc']].groupby(['propertyzoningdesc']).agg(['count'])
 
-
-
 del df_train["parcelid"]
 
 features = list(df_train.columns)
@@ -111,9 +109,6 @@ params['silent'] = 1
 
 watchlist = [(d_train, 'train'), (d_valid, 'valid')]
 clf = xgb.train(params, d_train, 10000, watchlist, early_stopping_rounds=100, verbose_eval=10)
-
-
-
 
 ##############################################################
 ################### Testing    #############################
