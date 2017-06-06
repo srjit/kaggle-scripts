@@ -39,6 +39,7 @@ params['objective'] = 'reg:linear'
 params['eval_metric'] = 'mae'
 params['max_depth'] = 4
 params['silent'] = 1
+params['lambda'] = 0.5
 
 watchlist = [(d_train, 'train'), (d_valid, 'valid')]
 clf = xgb.train(params, d_train, 10000, watchlist, early_stopping_rounds=100, verbose_eval=10)
